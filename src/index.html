@@ -31,12 +31,12 @@
       console.log(this.responseText);
     }
 
-    var xhr = new XMLHttpRequest(endpoint, params);
+    var xhr = new XMLHttpRequest();
     xhr.onload = xhrListener;
     xhr.withCredentials = true;
-    xhr.open('GET', url, true); // async is true
+    xhr.open('GET', url + endpoint, true); // async is true
     xhr.setRequestHeader('Authorization', auth);
-    xhr.send();
+    xhr.send(params);
 
   </script>
 </head>
