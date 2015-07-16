@@ -1,22 +1,42 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>My Divshot Application</title>
 
   <style>
-    body{
-      font:500 14px/21px 'Helvetica Neue', Helvetica, Arials;
-      padding:40px;
+    body {
+      font: 500 14px/21px 'Helvetica Neue', Helvetica, Arials;
+      padding: 40px;
     }
-  </style>
 
+  </style>
+  <script>
+    // Development API and credentials
+    var url = 'https://osipfwpcloud1.cloudapp.net/piwebapi/system/configuration';
+    // var auth = 'Basic UG93ZXJmYWN0b3JzXGFsZXguc3BvaWFsYTpQb3dlcmZAY3RvcnMwNjI1 ';
+    var auth = 'Basic cG93ZXJmYWN0b3JzXGFwb25nOlBvd2VyZkBjdG9yczA1MTQz '; //awp
+
+    function xhrListener() {
+      console.log(this.responseText);
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.onload = xhrListener;
+    xhr.withCredentials = true;
+    xhr.open('GET', url, true); // async is true
+    xhr.setRequestHeader('Authorization', auth);
+    xhr.send();
+
+  </script>
 </head>
+
 <body>
-  <h1>Welcome to Divshot Hosting!</h1>
-  <p>Make something static!</p>
-  <h2>Should there be something here?</h2>
-  <p><a href="mailto:support@divshot.com">Get Help via Email</a> or <a href="http://docs.divshot.com/guides/common-deploy-issues">Common Deploy Issues Documentation</a></p>
+  <h1>This is Andrew's lunchbox.</h1>
+  <p>It's tasty.</p>
+  <p><a href="http://www.dstcontrols.com">DST Controls</a></p>
 </body>
+
 </html>
