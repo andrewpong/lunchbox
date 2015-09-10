@@ -1,0 +1,8 @@
+{
+  "directory": "src/assets/libs",
+  "analytics": false,
+  "timeout": 10000,
+  "color": true,
+  "interactive": "auto",
+  "strict-ssl": true
+}

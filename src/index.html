@@ -5,40 +5,13 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>My Divshot Application</title>
-
-  <style>
-    body {
-      font: 500 14px/21px 'Helvetica Neue', Helvetica, Arials;
-      padding: 40px;
-    }
-
-  </style>
-  <script>
-    // Development API and credentials
-    var auth = 'Basic cG93ZXJmYWN0b3JzXGFwb25nOlBvd2VyZkBjdG9yczA1MTQz'; //awp
-    var url = 'https://osipfwpcloud1.cloudapp.net/piwebapi';
-    var webId = 'E0q2T8XssxoEe7g8U9yn3A2gmd2JSXsl5RGAwgANOjIcHQUEZBRlxDTEVBTlBPV0VSRklOQU5DRVwxMDIyXDAzMzMwNVxNRVRFUl9JVFJPTl9LVzAwMzMzMDUgLSBJVFJPTg'
-    var endpoint = '/streamsets/' + webId + '/value';
-
-    function xhrListener() {
-      console.log(this);
-    }
-
-    // Create a new XHR request
-    var xhr = new XMLHttpRequest();
-    xhr.onload = xhrListener; // Call the xhrListener function when the operation is sucessfully completed
-    xhr.withCredentials = true; // Specify that this is a XHR with an Authorization header
-    xhr.open('GET', url + endpoint, true); // This XHR is async
-    xhr.setRequestHeader('Authorization', auth); // Add the authorization header to the XHR
-    xhr.send(); // Send the XHR
-
-  </script>
 </head>
 
 <body>
   <h1>This is Andrew's lunchbox.</h1>
   <p>Check the console, it's tasty.</p>
   <p>© 2015 <a href="http://www.dstcontrols.com">DST Controls</a></p>
+  <script type="text/javascript" src="app.js"></script>
 </body>
 
 </html>

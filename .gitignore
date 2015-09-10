@@ -1,0 +1,4 @@
+.divshot-cache/
+.git/
+node_modules/
+src/assets/libs/
