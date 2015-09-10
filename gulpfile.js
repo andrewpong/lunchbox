@@ -6,44 +6,50 @@
 'use strict';
 
 // Load some modules which are installed through NPM.
-var del = require('del');
-var runSequence = require('run-sequence');
-var gulp = require('gulp');
-var babel = require('gulp-babel');
-var batch = require('gulp-batch');
-var plumber = require('gulp-plumber');
-var watch = require('gulp-watch');
-var webserver = require('gulp-webserver');
+let del = require('del');
+let runSequence = require('run-sequence');
+let gulp = require('gulp');
+let jscs = require('gulp-jscs');
+let babel = require('gulp-babel');
+let batch = require('gulp-batch');
+let plumber = require('gulp-plumber');
+let watch = require('gulp-watch');
+let webserver = require('gulp-webserver');
+
+let path = {
+  src:   'src',
+  build: 'build',
+  dist:  'dist',
+  libs:  '!src/assets/libs/**',
+};
 
 // Directories
-var src = 'src';
-var dist = 'dist';
-
-// Path globs
-var paths = {
-  jsx: [src + '/**/*.jsx'],
-  js: [src + '/**/*.js'],
-  fonts: [src + '/**/*.{eot,svg,ttf,woff,woff2}'],
-  css: [src + '/**/*.css'],
-  html: [src + '/**/*.html'],
-  img: [
-    src + '/**/*.png',
-    src + '/**/*.jpg',
-    src + '/**/*.jpeg',
-    src + '/**/*.gif',
-  ],
-  assets: [
-    src + '/**/*.html',
-    src + '/**/*.js',
-    src + '/**/*.jsx',
-    src + '/**/*.css',
-    src + '/**/*.less',
-    src + '/**/*.png',
-    src + '/**/*.jpg',
-    src + '/**/*.jpeg',
-    src + '/**/*.gif',
-    src + '/**/*.json',
-  ],
+let src = {
+  glob: {
+    libs:   ['src/assets/libs/**'],
+    static: ['src/**/*.{json,xml,eot,svg,ttf,woff,woff2}', path.libs],
+    css:    ['src/**/*.css', path.libs],
+    html:   ['src/**/*.html', path.libs],
+    js:     ['src/**/*.js', path.libs],
+    img: [
+      path.src + '/**/*.png',
+      path.src + '/**/*.jpg',
+      path.src + '/**/*.jpeg',
+      path.src + '/**/*.gif',
+    ],
+    assets: [
+      path.src + '/**/*.html',
+      path.src + '/**/*.js',
+      path.src + '/**/*.jsx',
+      path.src + '/**/*.css',
+      path.src + '/**/*.less',
+      path.src + '/**/*.png',
+      path.src + '/**/*.jpg',
+      path.src + '/**/*.jpeg',
+      path.src + '/**/*.gif',
+      path.src + '/**/*.json',
+    ],
+  },
 };
 
 var monkeypatch = function monkeypatch(e) {
@@ -52,53 +58,64 @@ var monkeypatch = function monkeypatch(e) {
   _this.emit('end');
 };
 
-gulp.task('clean', function(cb) {
-  del([dist], cb);
+gulp.task('clean:dist', function() {
+  return del(['dist/**', '!dist'])
+    .then(function(paths) {
+      // console.log('Deleted files/folders:\n', paths.join('\n'));
+    });
 });
 
-gulp.task('copy-html', function() {
-  gulp.src(paths.html)
+gulp.task('compile:js', function() {
+  return gulp.src(src.glob.js)
+    .pipe(plumber({ errorHandler: monkeypatch }))
+    .pipe(jscs({
+           fix: true
+       }))
+    .pipe(babel())
+    .pipe(gulp.dest(path.dist));
+});
+
+gulp.task('copy:html', function() {
+  return gulp.src(src.glob.html)
   .pipe(plumber({ errorHandler: monkeypatch }))
-  .pipe(gulp.dest(dist));
+  .pipe(gulp.dest(path.dist));
 });
 
-gulp.task('copy-css', function() {
-  gulp.src(paths.css)
+gulp.task('copy:css', function() {
+  return gulp.src(src.glob.css)
   .pipe(plumber({ errorHandler: monkeypatch }))
-  .pipe(gulp.dest(dist));
+  .pipe(gulp.dest(path.dist));
 });
 
-gulp.task('copy-js', function() {
-  gulp.src(paths.js)
+gulp.task('copy:libs', function() {
+  return gulp.src(src.glob.libs)
   .pipe(plumber({ errorHandler: monkeypatch }))
-  .pipe(gulp.dest(dist));
+  .pipe(gulp.dest(path.dist + '/assets/libs'));
 });
 
-gulp.task('copy-fonts', function() {
-  gulp.src(paths.fonts)
+gulp.task('copy:static', function() {
+  return gulp.src(src.glob.static)
   .pipe(plumber({ errorHandler: monkeypatch }))
-  .pipe(gulp.dest(dist));
+  .pipe(gulp.dest(path.dist));
 });
 
-gulp.task('build', function(cb) {
-  runSequence(['copy-html', 'copy-css', 'copy-js', 'copy-fonts'], cb);
+gulp.task('watch:src', function() {
+  watch(src.glob.assets, function() {
+    gulp.start('build:src');
+  });
 });
 
-gulp.task('watch', function() {
-  gulp.watch(paths.html, ['copy-html']);
-  gulp.watch(paths.css, ['copy-css']);
-  gulp.watch(paths.js, ['copy-js']);
-  gulp.watch(paths.fonts, ['copy-fonts']);
+gulp.task('build:src', function() {
+  runSequence('clean:dist', 'compile:js', ['copy:html', 'copy:css', 'copy:libs', 'copy:static']);
 });
 
-gulp.task('dev', function(cb) {
-  runSequence('clean', 'build', 'watch', 'serve', cb);
+gulp.task('echo', function() {
+  console.log('Working!');
 });
 
-gulp.task('default', ['dev']);
-
-gulp.task('serve', function() {
-  gulp.src(src)
+gulp.task('serve:dist', function() {
+  gulp.src(path.dist)
+  .pipe(plumber({ errorHandler: monkeypatch }))
   .pipe(webserver({
     livereload: {
       enable: true,
@@ -107,6 +124,36 @@ gulp.task('serve', function() {
     open: true,
   }));
 });
+
+gulp.task('serve:src', function() {
+  gulp.src(path.src)
+  .pipe(plumber({ errorHandler: monkeypatch }))
+  .pipe(webserver({
+    livereload: {
+      enable: true,
+      pollingInterval: 100,
+    },
+    open: true,
+  }));
+});
+
+gulp.task('serve:build', function() {
+  gulp.src(path.build)
+  .pipe(plumber({ errorHandler: monkeypatch }))
+  .pipe(webserver({
+    livereload: {
+      enable: true,
+      pollingInterval: 100,
+    },
+    open: true,
+  }));
+});
+
+gulp.task('dev', function(cb) {
+  runSequence('build:src', 'watch:src', 'serve:dist', cb);
+});
+
+gulp.task('default', ['dev']);
 
 //
 // Incident Form related tasks

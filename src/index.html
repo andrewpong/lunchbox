@@ -5,13 +5,24 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>My Divshot Application</title>
+  <script type="text/javascript" src="jspm_packages/system.js"></script>
+  <script type="text/javascript" src="config.js"></script>
+  <script>
+    System.import('app').then(app => {
+        console.log('app');
+        console.log(app);
+      })
+      // apopulateDropdown('foo', 'bar');
+
+  </script>
 </head>
+<select id="ui-abcdefg-id"></select>
 
 <body>
   <h1>This is Andrew's lunchbox.</h1>
   <p>Check the console, it's tasty.</p>
   <p>© 2015 <a href="http://www.dstcontrols.com">DST Controls</a></p>
-  <script type="text/javascript" src="app.js"></script>
+  <div id="log"></div>
 </body>
 
 </html>

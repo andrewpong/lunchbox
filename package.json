@@ -11,9 +11,11 @@
     "gulp": "^3.9.0",
     "gulp-babel": "^5.2.1",
     "gulp-batch": "^1.0.5",
+    "gulp-jscs": "^2.0.0",
     "gulp-plumber": "^1.0.1",
     "gulp-watch": "^4.3.5",
     "gulp-webserver": "^0.9.1",
+    "jspm": "^0.16.0-beta.7",
     "run-sequence": "^1.1.2"
   },
   "scripts": {
@@ -28,5 +30,16 @@
   "bugs": {
     "url": "https://github.com/andrewpong/lunchbox/issues"
   },
-  "homepage": "https://github.com/andrewpong/lunchbox#readme"
+  "homepage": "https://github.com/andrewpong/lunchbox#readme",
+  "jspm": {
+    "directories": {
+      "baseURL": "src"
+    },
+    "dependencies": {},
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.21",
+      "babel-runtime": "npm:babel-runtime@^5.8.20",
+      "core-js": "npm:core-js@^1.0.0"
+    }
+  }
 }
